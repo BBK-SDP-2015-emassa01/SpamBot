@@ -18,13 +18,12 @@ import java.util.regex.Pattern;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Esha
  */
-public class WebPageImpl implements WebPage{
-    
+public class WebPageImpl implements WebPage {
+
     private final URL URL;
     private final Set<String> links;
     private Set<String> emails;
@@ -37,41 +36,38 @@ public class WebPageImpl implements WebPage{
 
     @Override
     public String getUrl() {
-        
         return this.URL.toString();
-        
+
     }
 
     @Override
     public Set<String> getLinks() {
-        return this.links;
+        return Collections.unmodifiableSet(links);
     }
 
     @Override
     public Set<String> getEmails() {
-        return this.emails;
+        return Collections.unmodifiableSet(emails);
     }
-    
-    public void scanForWebpages(){
+
+    public void scanForWebpages() {
         BufferedReader in = null;
-    
+
         try {
             InputStream newStream = URL.openStream();
-             in = new BufferedReader(new InputStreamReader(newStream));
+            in = new BufferedReader(new InputStreamReader(newStream));
             String inputLine;
             String address = "";
             int startPosition = 0;
             int endPosition = 0;
-            while ((inputLine = in.readLine())!=null){
+            while ((inputLine = in.readLine()) != null) {
                 Matcher m = Pattern.compile("\\b(?<=(href=\"))[^\"]*?(?=\")").matcher(inputLine);
-                while(m.find()){
-                address = m.group();
+                while (m.find()) {
+                    address = m.group();
                 }
                 links.add(address);
             }
-        }
-            
-            catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
@@ -79,22 +75,51 @@ public class WebPageImpl implements WebPage{
             } catch (IOException ex) {
                 Logger.getLogger(WebPageImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
-                }
+        }
     }
-        
     
-    
-    public static void main(String[] args) throws MalformedURLException{
-        
-        WebPage webPage = new WebPageImpl(new URL("http://www.oracle.com/"));
+    public void scanForEmails() {
+        BufferedReader in = null;
+
+        try {
+            InputStream newStream = URL.openStream();
+            in = new BufferedReader(new InputStreamReader(newStream));
+            String inputLine;
+            String address = "";
+            int startPosition = 0;
+            int endPosition = 0;
+            while ((inputLine = in.readLine()) != null) {
+                Matcher m = Pattern.compile("[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+").matcher(inputLine);
+                while (m.find()) {
+                    address = m.group();
+                }
+                emails.add(address);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(WebPageImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws MalformedURLException {
+
+        WebPage webPage = new WebPageImpl(new URL("http://psychology.exeter.ac.uk/staff/all/"));
         webPage.scanForWebpages();
-        
-        for (Object current:(webPage.getLinks())){
+        webPage.scanForEmails();
+
+        for (Object current : (webPage.getLinks())) {
             System.out.println(current.toString());
         }
-                
-                
+        
+        for (Object current : (webPage.getEmails())) {
+            System.out.println(current.toString());
+        }
+
     }
-    
-    
+
 }

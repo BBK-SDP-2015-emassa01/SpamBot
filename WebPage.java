@@ -44,5 +44,9 @@ Set<String> getEmails();
 // p1.getUrl().equals(p2.getUrl()) returns true
 
 void scanForWebpages();
+
+void scanForEmails();
+
+
 }
 
