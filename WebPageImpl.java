@@ -53,40 +53,36 @@ public class WebPageImpl implements WebPage{
     }
     
     public void scanForWebpages(){
+        BufferedReader in = null;
+    
         try {
             InputStream newStream = URL.openStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(newStream));
+             in = new BufferedReader(new InputStreamReader(newStream));
             String inputLine;
             String address = "";
             int startPosition = 0;
             int endPosition = 0;
             while ((inputLine = in.readLine())!=null){
-                Matcher m = Pattern.compile("href=+ [/((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)/]").matcher(inputLine);
+                Matcher m = Pattern.compile("\\b(?<=(href=\"))[^\"]*?(?=\")").matcher(inputLine);
                 while(m.find()){
                 address = m.group();
-                
-                for (int i = 0; i< address.length(); i++){
-                    if (address.substring(i, i+1) == "\""){
-                        startPosition = i;
-                    }
-                }
-                address = address.substring(startPosition);
-                
-                for (int i = 0; i< address.length(); i++){
-                    if (address.substring(i, i+1) == "\""){
-                        endPosition = i;
-                    }
-                }
-                address = address.substring(0, endPosition);
                 }
                 links.add(address);
             }
-            in.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+            
+            catch (IOException ex) {
+            Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(WebPageImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                }
     }
+        
+    
     
     public static void main(String[] args) throws MalformedURLException{
         
