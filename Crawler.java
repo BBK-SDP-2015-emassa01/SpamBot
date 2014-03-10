@@ -1,3 +1,4 @@
+package SpamBot;
 import java.net.URL;
 import java.util.concurrent.Callable;
 
