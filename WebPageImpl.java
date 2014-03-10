@@ -27,10 +27,12 @@ public class WebPageImpl implements WebPage {
 
     private final URL URL;
     private final Set<URL> links;
+    private final Set<String> linksString;
     private Set<String> emails;
 
     public WebPageImpl(URL url) {
         this.links = new HashSet<URL>();
+        this.linksString = new HashSet<String>();
         this.emails = new HashSet<String>();
         this.URL = url;
     }
@@ -59,15 +61,16 @@ public class WebPageImpl implements WebPage {
             in = new BufferedReader(new InputStreamReader(newStream));
             String inputLine;
             String address = "";
-            int startPosition = 0;
-            int endPosition = 0;
             while ((inputLine = in.readLine()) != null) {
                 Matcher m = Pattern.compile("\\b(?<=(href=\"))[^\"]*?(?=\")").matcher(inputLine);
                 while (m.find()) {
                     address = m.group();
-                }
+                
                 URL addr=new URL(address);
                 links.add(addr);
+                
+                linksString.add(address);
+                }
             }
         } catch (IOException ex) {
            // Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,8 +91,6 @@ public class WebPageImpl implements WebPage {
             in = new BufferedReader(new InputStreamReader(newStream));
             String inputLine;
             String address = "";
-            int startPosition = 0;
-            int endPosition = 0;
             while ((inputLine = in.readLine()) != null) {
                 Matcher m = Pattern.compile("[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+").matcher(inputLine);
                 while (m.find()) {
