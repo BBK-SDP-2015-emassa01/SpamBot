@@ -25,11 +25,11 @@ import java.util.regex.Pattern;
 public class WebPageImpl implements WebPage {
 
     private final URL URL;
-    private final Set<String> links;
+    private final Set<URL> links;
     private Set<String> emails;
 
     public WebPageImpl(URL url) {
-        this.links = new HashSet<String>();
+        this.links = new HashSet<URL>();
         this.emails = new HashSet<String>();
         this.URL = url;
     }
@@ -41,7 +41,7 @@ public class WebPageImpl implements WebPage {
     }
 
     @Override
-    public Set<String> getLinks() {
+    public Set<URL> getLinks() {
         return Collections.unmodifiableSet(links);
     }
 
@@ -65,15 +65,16 @@ public class WebPageImpl implements WebPage {
                 while (m.find()) {
                     address = m.group();
                 }
-                links.add(address);
+                URL addr=new URL(address);
+                links.add(addr);
             }
         } catch (IOException ex) {
-            Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
+           // Logger.getLogger(SpamBotImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 in.close();
             } catch (IOException ex) {
-                Logger.getLogger(WebPageImpl.class.getName()).log(Level.SEVERE, null, ex);
+               // Logger.getLogger(WebPageImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -115,11 +116,13 @@ public class WebPageImpl implements WebPage {
         for (Object current : (webPage.getLinks())) {
             System.out.println(current.toString());
         }
-        
-        for (Object current : (webPage.getEmails())) {
+
+       /* for (Object current : (webPage.getEmails())) {
             System.out.println(current.toString());
         }
-
+*/
     }
+
+
 
 }

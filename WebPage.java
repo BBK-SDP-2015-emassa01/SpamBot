@@ -1,4 +1,5 @@
 
+import java.net.URL;
 import java.util.Set;
 
 /*
@@ -29,7 +30,7 @@ String getUrl();
 *
 * @return all the links on this webpage.
 */
-Set<String> getLinks();
+Set<URL> getLinks();
 /**
 * Returns all the emails on this webpage.
 *
