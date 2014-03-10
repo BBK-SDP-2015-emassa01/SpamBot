@@ -1,3 +1,5 @@
+package SpamBot;
+
 
 import java.net.MalformedURLException;
 import java.util.Set;

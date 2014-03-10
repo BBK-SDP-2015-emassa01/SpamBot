@@ -1,4 +1,4 @@
-
+package SpamBot;
 import SpamBot.SpamBotImpl;
 import java.io.BufferedReader;
 import java.io.IOException;
